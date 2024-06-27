@@ -3,7 +3,8 @@
 ## Magic Draw SysML Model Files
 
 * [aic.mdzip](https://github.com/tsherburne/aic/blob/main/aic.mdzip) (**AIC Model** in Magic Draw Zip format)
-  * See: https://docs.nomagic.com/display/MSOSA2024x
+  * [SysML Overview Tutorial](https://www.youtube.com/playlist?list=PLKz_xsS_duotA7ZA5QZ_sESHZQL-HWFym) (YouTube Video Series)
+  * [Magic Systems of Systems Architect](https://docs.nomagic.com/display/MSOSA2024x)
 * [aic.xml](https://github.com/tsherburne/aic/blob/main/aic.xml) (**AIC Model** in XMI format - XML Model Interchange)
   * See: https://www.omg.org/spec/XMI/
 
