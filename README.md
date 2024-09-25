@@ -12,4 +12,4 @@
 https://tsherburne.github.io/aic/
 
 ---
-![AIC ConOps](https://tsherburne.github.io/aic/index_files/7d848af5-2229-467c-ae49-e9bbd7ce2a9f.jpg)
+![AIC ConOps](https://tsherburne.github.io/aic/index_files/_2024x_131803cf_1718126112750_459352_4368.jpg)
