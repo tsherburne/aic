@@ -1,0 +1,129 @@
+{ 
+  "mission": {
+      "start":"A",
+      "end":"B",
+      "human estimate time": 30,
+      "AI estimate time": 5,
+      "UGV traversal time": 15
+  },
+  "nodes": [
+    {
+      "id": "A",
+      "description": "Passage Point A"
+    },
+    {
+      "id": "B",
+      "description": "Passage Point B"
+    },
+    {
+      "id": "C",
+      "description": "Passage Point C"
+    },
+    {
+      "id": "D",
+      "description": "Passage Point D"
+    },
+    {
+      "id": "E",
+      "description": "Passage Point E"
+    },
+    {
+      "id": "F",
+      "description": "Passage Point F"
+    },
+    {
+      "id": "G",
+      "description": "Passage Point G"
+    }
+  ],
+  "edges": [
+    {
+      "from": "A",
+      "to": "B",
+      "landmine_present": true,
+      "landmine_cleared": false,
+      "ai_estimate": 0.85,
+      "human_estimate": 0.90,
+      "terrain_type": "rocky",
+      "ai_queried": false,
+      "human_queried": false
+    },
+    {
+      "from": "A",
+      "to": "C",
+      "landmine_present": false,
+      "landmine_cleared": true,
+      "ai_estimate": 0.20,
+      "human_estimate": 0.25,
+      "terrain_type": "forest",
+      "ai_queried": false,
+      "human_queried": false
+    },
+    {
+      "from": "B",
+      "to": "D",
+      "landmine_present": true,
+      "landmine_cleared": false,
+      "ai_estimate": 0.65,
+      "human_estimate": 0.70,
+      "terrain_type": "desert",
+      "ai_queried": false,
+      "human_queried": false
+    },
+    {
+      "from": "C",
+      "to": "D",
+      "landmine_present": false,
+      "landmine_cleared": true,
+      "ai_estimate": 0.15,
+      "human_estimate": 0.20,
+      "terrain_type": "grassland",
+      "ai_queried": false,
+      "human_queried": false
+    },
+    {
+      "from": "D",
+      "to": "E",
+      "landmine_present": true,
+      "landmine_cleared": false,
+      "ai_estimate": 0.75,
+      "human_estimate": 0.80,
+      "terrain_type": "rocky",
+      "ai_queried": false,
+      "human_queried": false
+    },
+    {
+      "from": "E",
+      "to": "F",
+      "landmine_present": false,
+      "landmine_cleared": true,
+      "ai_estimate": 0.05,
+      "human_estimate": 0.10,
+      "terrain_type": "swamp",
+      "ai_queried": false,
+      "human_queried": false
+    },
+    {
+      "from": "F",
+      "to": "G",
+      "landmine_present": true,
+      "landmine_cleared": false,
+      "ai_estimate": 0.55,
+      "human_estimate": 0.60,
+      "terrain_type": "mountain",
+      "ai_queried": false,
+      "human_queried": false
+    },
+    {
+      "from": "G",
+      "to": "A",
+      "landmine_present": false,
+      "landmine_cleared": true,
+      "ai_estimate": 0.30,
+      "human_estimate": 0.35,
+      "terrain_type": "plains",
+      "ai_queried": false,
+      "human_queried": false
+    }
+  ]
+}
