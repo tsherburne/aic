@@ -28,3 +28,11 @@ Linux/macOs
 
 2. Run the simulator
 `python ./minedetection/renderer.py`
+
+In order to reset the simulator, close the window and rerun the previous command.
+
+### Simulator Notes
+
+The simulator by default has the path to the example config file coded into renderer.py when the Mission object is created. This can be updated to reflect newly created scenarios as you wish.
+
+The provided simulator is a starting point for the application. Feel free to alter the codebase as you see fit in order to complete the task at hand.
