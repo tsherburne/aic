@@ -27,7 +27,8 @@ Linux/macOs
 `pip install -r requirements.txt`
 
 2. Run the simulator
-`python ./minedetection/renderer.py`
+`cd minedetection`
+`python renderer.py`
 
 In order to reset the simulator, close the window and rerun the previous command.
 
