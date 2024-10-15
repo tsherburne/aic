@@ -13,3 +13,18 @@ https://tsherburne.github.io/aic/
 
 ---
 ![AIC ConOps](https://tsherburne.github.io/aic/index_files/_2024x_131803cf_1718126112750_459352_4368.jpg)
+
+
+## Running the Simulator
+1. Begin by standing up a Python virtual environment
+`python -m venv venv`
+
+Windows:
+`source ./venv/Scripts/activate`
+Linux/macOs
+`source ./venv/bin/activate`
+
+`pip install -r requirements.txt`
+
+2. Run the simulator
+`python ./minedetection/renderer.py`
