@@ -36,8 +36,8 @@ class Mission():
             self.__human_estimate_time = data["human estimate time"]
             self.__ai_estimate_time = data["AI estimate time"]
             self.__ugv_traversal_time = data["UGV traversal time"]
-            self.__ugv_clear_time = 40
-            self.__uav_traversal_time = 2
+            self.__ugv_clear_time = data["UGV clear time"]
+            self.__uav_traversal_time = data["UAV traversal time"]
             self.__ugv_location = self.start_node.upper()
             self.__uav_location = self.start_node.upper()
         self.__total = 0

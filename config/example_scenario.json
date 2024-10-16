@@ -4,7 +4,9 @@
       "end":"B",
       "human estimate time": 30,
       "AI estimate time": 5,
-      "UGV traversal time": 15
+      "UGV traversal time": 20,
+      "UGV clear time": 60,
+      "UAV traversal time": 1
   },
   "nodes": [
     {
