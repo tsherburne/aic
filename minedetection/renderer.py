@@ -1,21 +1,28 @@
-import matplotlib.pyplot as plt
-import networkx as nx
 import pyqtgraph as pg
-
-from PyQt6.QtWidgets import QMainWindow, QApplication, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import math
+from PyQt6.QtWidgets import QMainWindow, QApplication, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit, QGraphicsPolygonItem, QGraphicsScene, QGraphicsView, QGraphicsTextItem
+from PyQt6.QtCore import QPointF, Qt
+from PyQt6.QtGui import QPolygonF, QColor
 from mission import Mission
 
 
 class Renderer(QMainWindow):
     def __init__(self):
+        """
+        Creates the Renderer object
+        """
         super().__init__()
 
-        self.mission = Mission("example_scenario.json")
+        self.mission = Mission("example_scenario_1.json")
 
         self.show_flag = 0
         self.win_width = 1400
-        self.win_height = 900
+        self.win_height = 1200
+
+        hexagon_labels = []
+        for hex in self.mission.hexagons:
+            hexagon_labels.append(hex.label)
+        hex_map = Renderer.HexagonMap(self, hexagon_labels)
 
         self.setWindowTitle('Scenario')
         self.setFixedWidth(self.win_width)
@@ -26,8 +33,7 @@ class Renderer(QMainWindow):
         self.background = "background-color: white; color: white;"
         self.setStyleSheet("QMainWindow {background: 'white';}")
         self.main_panel = QGridLayout()
-        self.initialize_graph_view()
-        self.main_panel.addWidget(self.canvas, 0, 0, 1, 1)
+        self.main_panel.addWidget(hex_map)
         self.initialize_ui_view()
 
         self.widget = QWidget()
@@ -41,23 +47,6 @@ class Renderer(QMainWindow):
 
         self.show()
         QApplication.processEvents()
-
-    def initialize_graph_view(self):
-        """
-        Initializes the graph at the top of the window using networkx
-        """
-
-        self.figure = plt.figure()
-        self.canvas = FigureCanvas(self.figure)
-        G = nx.Graph()
-        edges = [(edge.origin, edge.destination) for edge in self.mission.network_edges]
-        G.add_edges_from(edges)
-        pos = nx.spring_layout(G)
-        nx.draw_networkx_nodes(G, pos, node_size=700)
-        nx.draw_networkx_labels(G, pos, font_size=20, font_family='sans-serif')
-        nx.draw_networkx_edges(G, pos, edgelist=edges, width=6)
-        labels = nx.get_edge_attributes(G, 'weight')
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
 
     def initialize_ui_view(self):
         """
@@ -73,15 +62,8 @@ class Renderer(QMainWindow):
         #  Mission Report (Error Reporting)
         self.mission_report = QLabel()
         self.add_custom_h_box_to_ui([
+            [QLabel(), "Mission Status: "],
             [self.mission_report, ""]
-        ])
-
-        #  Edge Selection
-        self.edge_selection_box = QLineEdit()
-        self.add_custom_h_box_to_ui([
-            [QLabel(), "Enter edge name (i.e. A,B): "],
-            [self.edge_selection_box],
-            [QPushButton(), "Select Edge", self.get_chosen_edge]
         ])
 
         #  AI Mine Estimate
@@ -108,22 +90,22 @@ class Renderer(QMainWindow):
         ])
 
         #  UAV Location and Moving
-        self.uav_value_label = QLabel(self.mission.uav_location)
+        self.uav_value_label = QLabel(self.mission.uav_location.label)
         self.move_uav_box = QLineEdit()
         self.add_custom_h_box_to_ui([
             [QLabel(), "UAV Location: "],
-            [self.uav_value_label, self.mission.uav_location],
+            [self.uav_value_label, self.mission.uav_location.label],
             [QLabel(), "Move UAV To: "],
             [self.move_uav_box],
             [QPushButton(), "Move", self.move_uav]
         ])
 
         #  UGV Location and Moving
-        self.ugv_value_label = QLabel(self.mission.ugv_location)
+        self.ugv_value_label = QLabel(self.mission.ugv_location.label)
         self.move_ugv_box = QLineEdit()
         self.add_custom_h_box_to_ui([
             [QLabel(), "UGV Location: "],
-            [self.ugv_value_label, self.mission.ugv_location],
+            [self.ugv_value_label, self.mission.ugv_location.label],
             [QLabel(), "Move UGV To: "],
             [self.move_ugv_box],
             [QPushButton(), "Move", self.move_ugv]
@@ -166,7 +148,6 @@ class Renderer(QMainWindow):
                 new_widget.setText(list[1])
                 new_widget.clicked.connect(list[2])
             else:
-                print("Not a valid widget type")
                 continue
             horizontal_layout.addWidget(new_widget)
 
@@ -176,28 +157,26 @@ class Renderer(QMainWindow):
         horizontal_layout.addStretch(1)
         horizontal_layout.setSpacing(1)
 
-    def get_chosen_edge(self):
+    def get_chosen_hex(self, hex_label: str):
         """
-        Gets a valid chosen edge and update the UI with its information
+        Gets a valid chosen hex and update the UI with its information
+
+        Parameters:
+            hex_label (str): The label for the hex to find
         """
 
-        self.mission_report.setText("")
-        edge = self.edge_selection_box.text().replace(' ', '')
-        split_edge = edge.split(',')
-        if len(split_edge) == 2 and len(split_edge[0]) == 1 and len(split_edge[1]) == 1 and split_edge[0].isalpha and split_edge[1].isalpha:
-            edge_1 = split_edge[0].upper()
-            edge_2 = split_edge[1].upper()
-            chosen_edge = self.mission.get_chosen_edge(edge_1, edge_2)
-            if chosen_edge is not None:
-                if chosen_edge.ai_queried:
-                    self.ai_query_value_label.setText(str(chosen_edge.ai_estimate))
+        if len(hex_label) == 2 and hex_label.isalpha:
+            chosen_hex = self.mission.get_chosen_hex(hex_label)
+            if chosen_hex is not None:
+                if chosen_hex.ai_queried:
+                    self.ai_query_value_label.setText(str(chosen_hex.ai_confidence))
                 else:
-                    self.ai_query_value_label.setText("Edge %s, %s not yet estimated by AI" % (edge_1, edge_2))
-                if chosen_edge.human_queried:
-                    self.human_query_value_label.setText(str(chosen_edge.human_estimate))
+                    self.ai_query_value_label.setText("Hex %s not yet estimated by AI" % (hex_label))
+                if chosen_hex.human_queried:
+                    self.human_query_value_label.setText(str(chosen_hex.human_confidence))
                 else:
-                    self.human_query_value_label.setText("Edge %s, %s not yet estimated by humans" % (edge_1, edge_2))
-                self.terrain_value_label.setText(chosen_edge.terrain_type)
+                    self.human_query_value_label.setText("Hex %s not yet estimated by humans" % (hex_label))
+                self.terrain_value_label.setText(chosen_hex.terrain)
         self.mission_report.setText(self.mission.current_log)
 
     def query_ai(self):
@@ -207,7 +186,7 @@ class Renderer(QMainWindow):
 
         self.mission_report.setText("")
         if self.mission.query_ai():
-            self.ai_query_value_label.setText(str(self.mission.selected_edge.ai_estimate))
+            self.ai_query_value_label.setText(str(self.mission.selected_hexagon.ai_confidence))
             self.total_value_label.setText(str(self.mission.total))
         self.mission_report.setText(self.mission.current_log)
 
@@ -218,7 +197,7 @@ class Renderer(QMainWindow):
 
         self.mission_report.setText("")
         if self.mission.query_human():
-            self.human_query_value_label.setText(str(self.mission.selected_edge.human_estimate))
+            self.human_query_value_label.setText(str(self.mission.selected_hexagon.human_confidence))
             self.total_value_label.setText(str(self.mission.total))
         self.mission_report.setText(self.mission.current_log)
 
@@ -229,8 +208,8 @@ class Renderer(QMainWindow):
 
         self.mission_report.setText("")
         uav_box_text = self.move_uav_box.text().upper()
-        edge = self.mission.move_uav(uav_box_text)
-        if edge is not None:
+        hex = self.mission.move_uav(uav_box_text)
+        if hex is not None:
             self.uav_value_label.setText(uav_box_text)
             self.total_value_label.setText(str(self.mission.total))
         self.mission_report.setText(self.mission.current_log)
@@ -247,6 +226,89 @@ class Renderer(QMainWindow):
             self.ugv_value_label.setText(ugv_box_text)
         self.total_value_label.setText(str(self.mission.total))
         self.mission_report.setText(self.mission.current_log)
+
+
+    class HexagonItem(QGraphicsPolygonItem):
+        def __init__(self, center: QPointF, radius: int, label: str, renderer, parent=None):
+            """
+            Creates the HexagonItem object
+
+            Parameters:
+                center (QPointF): The central point of the hex
+                radius (int): The radius of the hex
+                label (str): The label to be put in the middle of the hex
+                renderer (Renderer): A local reference to the Renderer object
+            """
+            super().__init__(parent)
+            self.label = label
+            self.renderer = renderer
+
+            points = []
+            for i in range(6):
+                angle = 2 * 3.14159 * i / 6
+                x = center.x() + radius * math.cos(angle)
+                y = center.y() + radius * math.sin(angle)
+                points.append(QPointF(x, y))
+            polygon = QPolygonF(points)
+            self.setPolygon(polygon)
+
+            self.textItem = QGraphicsTextItem(self)
+            self.textItem.setHtml('<center>%s</center>' % self.label)
+            self.textItem.setTextWidth(self.boundingRect().width())
+            rect = self.textItem.boundingRect()
+            rect.moveCenter(self.boundingRect().center())
+            self.textItem.setPos(rect.topLeft())
+
+            self.setBrush(QColor(0, 0, 0, 127))
+            self.setPen(QColor(255, 255, 255, 127))
+
+        def mousePressEvent(self, event):
+            """
+            The function called if the hex is clicked with the LMB
+
+            Parameters:
+                event (QGraphicsSceneMouseEvent): A mouse event that calls this function
+            """
+            if event.button() == Qt.MouseButton.LeftButton:
+                Renderer.get_chosen_hex(self.renderer, hex_label=self.label)
+
+    class HexagonMap(QGraphicsView):
+        def __init__(self, renderer, labels: list[str]):
+            """
+            Creates the HexagonMap object
+
+            Parameters:
+                renderer (Renderer): A local reference to the Renderer object
+                labels (list[str]): A list of labels to be put in the middle of the hexes
+            """
+            super().__init__()
+
+            self.scene = QGraphicsScene(self)
+            self.setScene(self.scene)
+            self.renderer = renderer
+
+            self.radius = 30
+            self.rows = 10
+            self.cols = 10
+            self.labels = labels
+            self.create_hexagons()
+
+        def create_hexagons(self):
+            """
+            Creates and adds each of the HexagonItems to the scene
+            """
+            count = 0
+            for row in range(self.rows):
+                for col in range(self.cols):
+                    x = col * self.radius * 1.5
+                    y = row * self.radius * 1.732
+                    if col % 2 == 1:
+                        y += self.radius * 0.866
+
+                    center = QPointF(x, y)
+                    hexagon = Renderer.HexagonItem(center, self.radius, self.labels[count], self.renderer)
+                    self.scene.addItem(hexagon)
+                    count += 1
 
 if __name__ == "__main__":
     pyqt_app = QApplication([])

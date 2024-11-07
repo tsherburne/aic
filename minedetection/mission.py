@@ -2,8 +2,7 @@ import json
 import logging
 import datetime
 import os
-from network_edge import NetworkEdge
-from typing import Set
+from hexagon import Hexagon
 
 
 class Mission():
@@ -26,51 +25,55 @@ class Mission():
         self.__current_log = ""
         with open('../config/' + config_filename) as json_data:
             data = json.load(json_data)
-            self.__network_edges = set()
-            self.__selected_edge = None
-            for edge in data['edges']:
-                self.__network_edges.add(NetworkEdge(edge))
+            self.__hexagons = []
+            self.__selected_hexagon = None
+            for label in data.keys():
+                if label != "mission":
+                    content = data[label]
+                    self.__hexagons.append(Hexagon(label, content['Terrain'], content['AI Confidence'], content['Human Confidence'], content['Mine']))
             data = data['mission']
             self.__start_node = data['start']
-            self.__end_node = data["end"]
+            self.__end_node = data['end']
             self.__human_estimate_time = data["human estimate time"]
             self.__ai_estimate_time = data["AI estimate time"]
             self.__ugv_traversal_time = data["UGV traversal time"]
             self.__ugv_clear_time = data["UGV clear time"]
             self.__uav_traversal_time = data["UAV traversal time"]
-            self.__ugv_location = self.start_node.upper()
-            self.__uav_location = self.start_node.upper()
+            self.__ugv_location = self.__hexagons[0]
+            self.__uav_location = self.__hexagons[0]
+            self.__hexagons[0].landmine_present = False
+            self.__hexagons[0].uav_scanned = True
         self.__total = 0
 
     @property
-    def network_edges(self) -> Set[NetworkEdge]:
+    def hexagons(self) -> list[Hexagon]:
         """
-        Gets the network_edges field
+        Gets the hexagons field
 
         Returns:
-            Set[NetworkEdge] - The network edges
+            Set[Hexagon] - The hexagons
         """
-        return self.__network_edges
+        return self.__hexagons
 
     @property
-    def selected_edge(self) -> NetworkEdge:
+    def selected_hexagon(self) -> Hexagon:
         """
-        Gets the selected_edge field
+        Gets the selected_hexagon field
 
         Returns:
-            NetworkEdge - The selected edge
+            Hexagon - The selected hexagon
         """
-        return self.__selected_edge
+        return self.__selected_hexagon
 
-    @selected_edge.setter
-    def selected_edge(self, edge):
+    @selected_hexagon.setter
+    def selected_hexagon(self, hex):
         """
-        Sets the selected_edge field
+        Sets the selected_hexagon field
 
         Parameters:
-            NetworkEdge - The edge to make current
+            hex - The hexagon to make current
         """
-        self.__selected_edge = edge
+        self.__selected_hexagon = hex
 
     @property
     def start_node(self) -> str:
@@ -143,7 +146,7 @@ class Mission():
         return self.__uav_traversal_time
 
     @property
-    def ugv_location(self) -> str:
+    def ugv_location(self) -> Hexagon:
         """
         Gets the ugv_location field
 
@@ -153,7 +156,7 @@ class Mission():
         return self.__ugv_location
 
     @property
-    def uav_location(self) -> str:
+    def uav_location(self) -> Hexagon:
         """
         Gets the uav_location field
 
@@ -191,74 +194,70 @@ class Mission():
         """
         self.__total += value
 
-    def query_ai(self):
+    def query_ai(self) -> bool:
         """
-        Check if there is a selected edge scanned by the UAV, and query the AI if so
+        Check if there is a selected hex scanned by the UAV, and query the AI if so
 
         Returns:
             True if the AI was queried
         """
 
-        if self.selected_edge is not None and self.selected_edge.uav_scanned and not self.selected_edge.ai_queried:
-            self.selected_edge.ai_queried = True
+        if self.selected_hexagon is not None and self.selected_hexagon.uav_scanned and not self.selected_hexagon.ai_queried:
+            self.selected_hexagon.ai_queried = True
             self.__increment_total(self.ai_estimate_time)
-            self.__log_message("AI queried for edge %s, %s. The estimate was %s." % (self.selected_edge.origin, self.selected_edge.destination, self.selected_edge.ai_estimate))
+            self.__log_message("AI queried for hex %s. The estimate was %s." % (self.selected_hexagon.label, self.selected_hexagon.ai_confidence))
             return True
         else:
-            self.__log_message("AI could not be queried for edge %s, %s. This occurs if an edge is not selected, the AI has already been queried, or the UAV has not scanned the current edge." % (self.selected_edge.origin, self.selected_edge.destination))
+            self.__log_message("AI could not be queried for hex %s. This occurs if a hex is not selected, the AI has already been queried, or the UAV has not scanned the current hex." % (self.selected_hexagon.label))
             return False
 
-    def query_human(self):
+    def query_human(self) -> bool:
         """
-        Check if there is a selected edge scanned by the UAV, and query the AI if so
+        Check if there is a selected hex scanned by the UAV, and query the AI if so
 
         Returns:
             True if the AI was queried
         """
 
-        if self.selected_edge is not None and self.selected_edge.uav_scanned and not self.selected_edge.human_queried:
-            self.selected_edge.human_queried = True
+        if self.selected_hexagon is not None and self.selected_hexagon.uav_scanned and not self.selected_hexagon.human_queried:
+            self.selected_hexagon.human_queried = True
             self.__increment_total(self.human_estimate_time)
-            self.__log_message("Human queried for edge %s, %s. The estimate was %s." % (self.selected_edge.origin, self.selected_edge.destination, self.selected_edge.human_estimate))
+            self.__log_message("Human queried for hex %s. The estimate was %s." % (self.selected_hexagon.label, self.selected_hexagon.human_confidence))
             return True
         else:
-            self.__log_message("Human could not be queried for edge %s, %s. This occurs if an edge is not selected, the human has already been queried, or the UAV has not scanned the current edge." % (self.selected_edge.origin, self.selected_edge.destination))
+            self.__log_message("Human could not be queried for hex %s. This occurs if an hex is not selected, the human has already been queried, or the UAV has not scanned the current hex." % (self.selected_hexagon.label))
             return False
 
-    def move_ugv(self, destination_node: str):
+    def move_ugv(self, destination_node: str) -> int:
         """
         Move the UGV to a valid adjacent location and increase the cost
 
         Params:
-            destination_node : str - The destination node for the UGV to move to
+            destination_node (str): The destination node for the UGV to move to
 
         Returns:
-            int - 0 if a landmine was found, 1 if a landmine was cleared, and -1 if the UGV could not be moved
+            0 if a landmine was found, 1 if a landmine was cleared, and -1 if the UGV could not be moved
         """
 
-        for edge in self.__network_edges:
-            if (
-                (self.ugv_location != destination_node) and
-                (self.ugv_location == edge.origin or self.ugv_location == edge.destination) and
-                (destination_node == edge.origin or destination_node == edge.destination)
-            ):
-                if edge.landmine_present and not edge.landmine_found:
+        for hex in self.hexagons:
+            if hex.label == destination_node and self.__is_adjacent(self.ugv_location, hex):
+                if hex.landmine_present and not hex.landmine_found:
                     self.__increment_total(self.ugv_traversal_time)
-                    edge.landmine_found = True
-                    self.__log_message("Landmine detected along edge %s, %s. UGV returned to orginal passageway. Move UGV again to clear landmine and complete traversal." % (self.ugv_location, destination_node))
+                    hex.landmine_found = True
+                    self.__log_message("Landmine detected along hex %s. UGV returned to orginal passageway. Move UGV again to clear landmine and complete traversal." % destination_node)
                     return 0
-                elif edge.landmine_present and edge.landmine_found:
+                elif hex.landmine_present and hex.landmine_found:
                     self.__increment_total(self.ugv_clear_time)
-                    edge.landmine_cleared = True
-                    edge.landmine_present = False
-                    self.__ugv_location = destination_node
+                    hex.landmine_cleared = True
+                    hex.landmine_present = False
+                    self.__ugv_location = hex
                     self.__log_message("Landmine cleared. UGV moved to passage %s." % destination_node)
                     if destination_node == self.end_node:
                         self.__log_message("MISSION SUCCESS")
                     return 1
                 else:
                     self.__increment_total(self.ugv_traversal_time)
-                    self.__ugv_location = destination_node
+                    self.__ugv_location = hex
                     self.__log_message("UGV moved to passage %s." % destination_node)
                     if destination_node == self.end_node:
                         self.__log_message("MISSION SUCCESS")
@@ -266,52 +265,67 @@ class Mission():
         self.__log_message("UGV could not be moved to passage %s. Please check the destination exists and is adjacent to the UGV's current location" % destination_node)
         return -1
 
-    def move_uav(self, destination_node: str):
+    def move_uav(self, destination_node: str) -> Hexagon:
         """
         Move the UAV to a valid adjacent location and increase the cost
 
         Params:
-            destination_node : str - The destination node for the UAV to move to
+            destination_node (str): The destination node for the UAV to move to
 
         Returns:
-            edge : NetworkEdge - the edge scanned by the UAV or None otherwise
+            The hex scanned by the UAV or None otherwise
         """
 
-        for edge in self.network_edges:
-            if (
-                (self.uav_location != destination_node) and
-                (self.uav_location == edge.origin or self.uav_location == edge.destination) and
-                (destination_node == edge.origin or destination_node == edge.destination)
-            ):
+        for hex in self.hexagons:
+            if hex.label == destination_node and self.__is_adjacent(self.uav_location, hex):
                 self.__increment_total(self.uav_traversal_time)
-                self.__uav_location = destination_node
-                edge.uav_scanned = True
-                self.__log_message("UAV moved to passage %s. Estimates can now be obtained for edge %s, %s." % (destination_node, edge.origin, edge.destination))
-                return edge
+                self.__uav_location = hex
+                hex.uav_scanned = True
+                self.__log_message("UAV moved to passage %s. Estimates can now be obtained for hex %s." % (destination_node, destination_node))
+                return hex
         self.__log_message("UAV could not be moved to passage %s. Please check the destination exists and is adjacent to the UAV's current location" % destination_node)
         return None
-
-    def get_chosen_edge(self, point_a: str, point_b: str):
+    
+    def __is_adjacent(self, current_hex: Hexagon, destination_hex: Hexagon) -> bool:
         """
-        Gets a valid chosen edge and update the UI with its information
+        Checks whether or not two hexagons are adjacent to one another
+        
+        Parameters:
+            current_hex (Hexagon): The current hexagon selected
+            destination_hex (Hexagon): The hexagon to check adjacency to the current
+        
+        Returns:
+            True if the current_hex and destination_hex are adjacent
+        """
+        if current_hex == destination_hex:
+            return False
+        letter_map = {'A': 0, 'B': 1, 'C': 2, 'D': 3,'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}
+        current_code = (letter_map[current_hex.label[0]], letter_map[current_hex.label[1]])
+        destination_code = (letter_map[destination_hex.label[0]], letter_map[destination_hex.label[1]])
+        return (
+            (current_code[0] == destination_code[0] and (current_code[1] + 1 - destination_code[1]) in [0, 1, 2]) or
+            (current_code[1] == destination_code[1] and (current_code[0] + 1 - destination_code[0]) in [0, 1, 2]) or
+            (current_code[1] % 2 == 0 and current_code[0] - 1 == destination_code[0] and (current_code[1] + 1 - destination_code[1]) in [0, 1, 2]) or
+            (current_code[1] % 2 == 1 and current_code[0] + 1 == destination_code[0] and (current_code[1] + 1 - destination_code[1]) in [0, 1, 2])
+        )
+
+    def get_chosen_hex(self, label: str) -> Hexagon:
+        """
+        Gets a valid chosen hex and update the UI with its information
 
         Params:
-            point_a : str - The start point for the edge to be gotten
-            point_b : str - The end point for the edge to be gotten
+            label : str - The label of the hex to be obtained
 
         Returns:
-            edge : NetworkEdge - the edge that was chosen or None otherwise
+            The hex that was chosen or None otherwise
         """
 
-        for edge in self.network_edges:
-            if (
-                (point_a == edge.origin or point_a == edge.destination) and
-                (point_b == edge.origin or point_b == edge.destination)
-            ):
-                self.__selected_edge = edge
-                self.__log_message("Selected edge %s, %s" % (point_a, point_b))
-                return edge
-        self.__log_message("Edge %s, %s could not be found" % (point_a, point_b))
+        for hex in self.hexagons:
+            if hex.label == label:
+                self.__selected_hexagon = hex
+                self.__log_message("Selected hex %s" % (hex.label))
+                return hex
+        self.__log_message("Hex %s could not be found" % (label))
         return None
 
     def __log_message(self, msg: str):
@@ -319,7 +333,7 @@ class Mission():
         Logs a message to the log file
         
         Params:
-            msg : str - The message to be logged
+            msg (str): The message to be logged
         """
 
         self.__current_log = msg
