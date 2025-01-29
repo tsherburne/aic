@@ -6,607 +6,706 @@
         "AI estimate time": 5,
         "UGV traversal time": 20,
         "UGV clear time": 60,
-        "UAV 1 traversal time": 1,
-        "UAV 2 traversal time": 2
+        "UAV traversal time": 1
     },
     "AA": {
         "Terrain": "Swampy",
         "AI Confidence": 0.75,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.80
     },
     "AB": {
         "Terrain": "Swampy",
         "AI Confidence": 0.63,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.73
     },
     "AC": {
         "Terrain": "Swampy",
         "AI Confidence": 0.72,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.77
     },
     "AD": {
         "Terrain": "Swampy",
         "AI Confidence": 0.83,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.94
     },
     "AE": {
         "Terrain": "Grassy",
         "AI Confidence": 0.98,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "AF": {
         "Terrain": "Grassy",
         "AI Confidence": 0.93,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "AG": {
         "Terrain": "Wooded",
         "AI Confidence": 0.81,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.85
     },
     "AH": {
         "Terrain": "Grassy",
         "AI Confidence": 0.93,
         "Human Confidence": 0.9,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.96
     },
     "AI": {
         "Terrain": "Grassy",
         "AI Confidence": 0.98,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "AJ": {
         "Terrain": "Grassy",
         "AI Confidence": 0.96,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "BA": {
         "Terrain": "Swampy",
         "AI Confidence": 0.63,
         "Human Confidence": 0.75,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.73
     },
     "BB": {
         "Terrain": "Swampy",
         "AI Confidence": 0.63,
         "Human Confidence": 0.75,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.64
     },
     "BC": {
         "Terrain": "Grassy",
         "AI Confidence": 0.91,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.91
     },
     "BD": {
         "Terrain": "Grassy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.9,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.99
     },
     "BE": {
         "Terrain": "Grassy",
         "AI Confidence": 0.98,
         "Human Confidence": 0.9,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.99
     },
     "BF": {
         "Terrain": "Wooded",
         "AI Confidence": 0.78,
         "Human Confidence": 0.7,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.83
     },
     "BG": {
         "Terrain": "Wooded",
         "AI Confidence": 0.73,
         "Human Confidence": 0.7,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.83
     },
     "BH": {
         "Terrain": "Grassy",
         "AI Confidence": 0.98,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.99
     },
     "BI": {
         "Terrain": "Grassy",
         "AI Confidence": 0.96,
         "Human Confidence": 0.9,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.99
     },
     "BJ": {
         "Terrain": "Grassy",
         "AI Confidence": 0.93,
         "Human Confidence": 0.9,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.98
     },
     "CA": {
         "Terrain": "Swampy",
         "AI Confidence": 0.75,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.88
     },
     "CB": {
         "Terrain": "Swampy",
         "AI Confidence": 0.75,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.86
     },
     "CC": {
         "Terrain": "Swampy",
         "AI Confidence": 0.83,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.97
     },
     "CD": {
         "Terrain": "Grassy",
         "AI Confidence": 0.98,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "CE": {
         "Terrain": "Grassy",
         "AI Confidence": 0.96,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.99
     },
     "CF": {
         "Terrain": "Wooded",
         "AI Confidence": 0.78,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.91
     },
     "CG": {
         "Terrain": "Wooded",
         "AI Confidence": 0.73,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.79
     },
     "CH": {
         "Terrain": "Wooded",
         "AI Confidence": 0.78,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.89
     },
     "CI": {
         "Terrain": "Grassy",
         "AI Confidence": 0.92,
         "Human Confidence": 0.9,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.93
     },
     "CJ": {
         "Terrain": "Grassy",
         "AI Confidence": 0.94,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.95
     },
     "DA": {
         "Terrain": "Swampy",
         "AI Confidence": 0.75,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.83
     },
     "DB": {
         "Terrain": "Swampy",
         "AI Confidence": 0.75,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.90
     },
     "DC": {
         "Terrain": "Grassy",
         "AI Confidence": 0.83,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.86
     },
     "DD": {
         "Terrain": "Grassy",
         "AI Confidence": 0.98,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "DE": {
         "Terrain": "Grassy",
         "AI Confidence": 0.96,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "DF": {
         "Terrain": "Wooded",
         "AI Confidence": 0.78,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.91
     },
     "DG": {
         "Terrain": "Wooded",
         "AI Confidence": 0.81,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.81
     },
     "DH": {
         "Terrain": "Wooded",
         "AI Confidence": 0.78,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.81
     },
     "DI": {
         "Terrain": "Wooded",
         "AI Confidence": 0.76,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.81
     },
     "DJ": {
         "Terrain": "Wooded",
         "AI Confidence": 0.76,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.88
     },
     "EA": {
         "Terrain": "Wooded",
         "AI Confidence": 0.68,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.71
     },
     "EB": {
         "Terrain": "Wooded",
         "AI Confidence": 0.73,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.82
     },
     "EC": {
         "Terrain": "Grassy",
         "AI Confidence": 0.93,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.97
     },
     "ED": {
         "Terrain": "Grassy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.98
     },
     "EE": {
         "Terrain": "Grassy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "EF": {
         "Terrain": "Grassy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.9,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.98
     },
     "EG": {
         "Terrain": "Wooded",
         "AI Confidence": 0.83,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.96
     },
     "EH": {
         "Terrain": "Wooded",
         "AI Confidence": 0.74,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.77
     },
     "EI": {
         "Terrain": "Wooded",
         "AI Confidence": 0.74,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.88
     },
     "EJ": {
         "Terrain": "Wooded",
         "AI Confidence": 0.76,
         "Human Confidence": 0.75,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.89
     },
     "FA": {
         "Terrain": "Wooded",
         "AI Confidence": 0.71,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.77
     },
     "FB": {
         "Terrain": "Grassy",
         "AI Confidence": 0.93,
         "Human Confidence": 0.9,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.97
     },
     "FC": {
         "Terrain": "Wooded",
         "AI Confidence": 0.81,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.92
     },
     "FD": {
         "Terrain": "Rocky",
         "AI Confidence": 0.56,
         "Human Confidence": 0.65,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.63
     },
     "FE": {
         "Terrain": "Rocky",
         "AI Confidence": 0.56,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.56
     },
     "FF": {
         "Terrain": "Rocky",
         "AI Confidence": 0.56,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.63
     },
     "FG": {
         "Terrain": "Rocky",
         "AI Confidence": 0.65,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.79
     },
     "FH": {
         "Terrain": "Rocky",
         "AI Confidence": 0.65,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.68
     },
     "FI": {
         "Terrain": "Rocky",
         "AI Confidence": 0.65,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.68
     },
     "FJ": {
         "Terrain": "Rocky",
         "AI Confidence": 0.62,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.66
     },
     "GA": {
         "Terrain": "Wooded",
         "AI Confidence": 0.68,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.78
     },
     "GB": {
         "Terrain": "Wooded",
         "AI Confidence": 0.73,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.85
     },
     "GC": {
         "Terrain": "Wooded",
         "AI Confidence": 0.78,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.83
     },
     "GD": {
         "Terrain": "Rocky",
         "AI Confidence": 0.55,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.65
     },
     "GE": {
         "Terrain": "Rocky",
         "AI Confidence": 0.58,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.59
     },
     "GF": {
         "Terrain": "Rocky",
         "AI Confidence": 0.61,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.64
     },
     "GG": {
         "Terrain": "Rocky",
         "AI Confidence": 0.65,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.72
     },
     "GH": {
         "Terrain": "Rocky",
         "AI Confidence": 0.65,
         "Human Confidence": 0.7,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.74
     },
     "GI": {
         "Terrain": "Rocky",
         "AI Confidence": 0.65,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.68
     },
     "GJ": {
         "Terrain": "Rocky",
         "AI Confidence": 0.63,
         "Human Confidence": 0.7,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.70
     },
     "HA": {
         "Terrain": "Sandy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.97
     },
     "HB": {
         "Terrain": "Sandy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.95
     },
     "HC": {
         "Terrain": "Sandy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.95
     },
     "HD": {
         "Terrain": "Sandy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.96
     },
     "HE": {
         "Terrain": "Sandy",
         "AI Confidence": 0.93,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.93
     },
     "HF": {
         "Terrain": "Rocky",
         "AI Confidence": 0.55,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.68
     },
     "HG": {
         "Terrain": "Sandy",
         "AI Confidence": 0.93,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.95
     },
     "HH": {
         "Terrain": "Rocky",
         "AI Confidence": 0.65,
         "Human Confidence": 0.65,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.79
     },
     "HI": {
         "Terrain": "Rocky",
         "AI Confidence": 0.65,
         "Human Confidence": 0.65,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.79
     },
     "HJ": {
         "Terrain": "Rocky",
         "AI Confidence": 0.63,
         "Human Confidence": 0.7,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.70
     },
     "IA": {
         "Terrain": "Sandy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.97
     },
     "IB": {
         "Terrain": "Sandy",
         "AI Confidence": 0.98,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "IC": {
         "Terrain": "Sandy",
         "AI Confidence": 0.98,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "ID": {
         "Terrain": "Sandy",
         "AI Confidence": 0.98,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.99
     },
     "IE": {
         "Terrain": "Sandy",
         "AI Confidence": 0.94,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.95
     },
     "IF": {
         "Terrain": "Sandy",
         "AI Confidence": 0.94,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.95
     },
     "IG": {
         "Terrain": "Sandy",
         "AI Confidence": 0.94,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.94
     },
     "IH": {
         "Terrain": "Rocky",
         "AI Confidence": 0.63,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.75
     },
     "II": {
         "Terrain": "Rocky",
         "AI Confidence": 0.62,
         "Human Confidence": 0.65,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.74
     },
     "IJ": {
         "Terrain": "Rocky",
         "AI Confidence": 0.63,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.66
     },
     "JA": {
         "Terrain": "Sandy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.96
     },
     "JB": {
         "Terrain": "Sandy",
         "AI Confidence": 0.96,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.96
     },
     "JC": {
         "Terrain": "Sandy",
         "AI Confidence": 0.96,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.99
     },
     "JD": {
         "Terrain": "Sandy",
         "AI Confidence": 0.96,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.97
     },
     "JE": {
         "Terrain": "Sandy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.96
     },
     "JF": {
         "Terrain": "Sandy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.95,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.98
     },
     "JG": {
         "Terrain": "Sandy",
         "AI Confidence": 0.95,
         "Human Confidence": 0.95,
-        "Mine": 1
+        "Mine": 1,
+        "AI Second Scan Confidence": 0.95
     },
     "JH": {
         "Terrain": "Rocky",
         "AI Confidence": 0.62,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.71
     },
     "JI": {
         "Terrain": "Rocky",
         "AI Confidence": 0.62,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.63
     },
     "JJ": {
         "Terrain": "Rocky",
         "AI Confidence": 0.62,
         "Human Confidence": 0.65,
-        "Mine": 0
+        "Mine": 0,
+        "AI Second Scan Confidence": 0.67
     }
 }
