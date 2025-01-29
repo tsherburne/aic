@@ -8,6 +8,6 @@ json_data = {}
 
 for col in sheet.iter_rows(values_only=True):
     if col[0] != 'Node':
-        json_data[col[0]] = {'Terrain': col[1], 'AI Confidence': col[2], 'Human Confidence': col[3], 'Mine': col[4]}
+        json_data[col[0]] = {'Terrain': col[1], 'AI Confidence': col[2], 'Human Confidence': col[3], 'Mine': col[4], 'AI Second Scan Confidence': col[5]}
 with open('../config/example_scenario_1.json', 'w') as file:
     json.dump(json_data, file)

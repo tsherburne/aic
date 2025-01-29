@@ -13,7 +13,7 @@ class Renderer(QMainWindow):
         """
         super().__init__()
 
-        self.mission = Mission("example_scenario_1.json")
+        self.mission = Mission("example_scenario_two_scans.json")
 
         self.show_flag = 0
         self.win_width = 1400
@@ -56,7 +56,7 @@ class Renderer(QMainWindow):
 
         #  Mission Details
         self.add_custom_h_box_to_ui([
-            [QLabel(), "Mission Details: Start Node - %s, End Node - %s, UAV Traversal Time - %s, Cost of Human Estimate - %s, Cost of AI Estimate - %s, UGV Traversal Time - %s, UGV Clear Time - %s" % (self.mission.start_node, self.mission.end_node, self.mission.uav_traversal_time, self.mission.human_estimate_time, self.mission.ai_estimate_time, self.mission.ugv_traversal_time, self.mission.ugv_clear_time)]  # noqa: E501
+            [QLabel(), "Mission Details: Start Node - %s, End Node - %s, UAV 1 Traversal Time - %s, UAV 2 Traversal Time - %s, Cost of Human Estimate - %s, Cost of AI Estimate - %s, UGV Traversal Time - %s, UGV Clear Time - %s" % (self.mission.start_node, self.mission.end_node, self.mission.uav_1.uav_traversal_time, self.mission.uav_2.uav_traversal_time, self.mission.human_estimate_time, self.mission.ai_estimate_time, self.mission.ugv_traversal_time, self.mission.ugv_clear_time)]  # noqa: E501
         ])
 
         #  Mission Report (Error Reporting)
@@ -66,12 +66,20 @@ class Renderer(QMainWindow):
             [self.mission_report, ""]
         ])
 
-        #  AI Mine Estimate
-        self.ai_query_value_label = QLabel()
+        #  AI 1 Mine Estimate
+        self.ai_1_query_value_label = QLabel()
         self.add_custom_h_box_to_ui([
-            [QLabel(), "AI Mine Estimate: "],
-            [self.ai_query_value_label, "N/A"],
-            [QPushButton(), "Get AI Estimate", self.query_ai]
+            [QLabel(), "AI 1 Mine Estimate: "],
+            [self.ai_1_query_value_label, "N/A"],
+            [QPushButton(), "Get AI 1 Estimate", self.query_ai, 1]
+        ])
+
+        #  AI 2 Mine Estimate
+        self.ai_2_query_value_label = QLabel()
+        self.add_custom_h_box_to_ui([
+            [QLabel(), "AI 2 Mine Estimate: "],
+            [self.ai_2_query_value_label, "N/A"],
+            [QPushButton(), "Get AI 2 Estimate", self.query_ai, 2]
         ])
 
         #  Human Mine Estimate
@@ -89,15 +97,26 @@ class Renderer(QMainWindow):
             [self.terrain_value_label, "N/A"]
         ])
 
-        #  UAV Location and Moving
-        self.uav_value_label = QLabel(self.mission.uav_location.label)
-        self.move_uav_box = QLineEdit()
+        #  UAV 1 Location and Moving
+        self.uav_1_value_label = QLabel(self.mission.uav_1.uav_location.label)
+        self.move_uav_1_box = QLineEdit()
         self.add_custom_h_box_to_ui([
-            [QLabel(), "UAV Location: "],
-            [self.uav_value_label, self.mission.uav_location.label],
-            [QLabel(), "Move UAV To: "],
-            [self.move_uav_box],
-            [QPushButton(), "Move", self.move_uav]
+            [QLabel(), "UAV 1 Location: "],
+            [self.uav_1_value_label, self.mission.uav_1.uav_location.label],
+            [QLabel(), "Move UAV 1 To: "],
+            [self.move_uav_1_box],
+            [QPushButton(), "Move", self.move_uav, 1]
+        ])
+
+        #  UAV 2 Location and Moving
+        self.uav_2_value_label = QLabel(self.mission.uav_2.uav_location.label)
+        self.move_uav_2_box = QLineEdit()
+        self.add_custom_h_box_to_ui([
+            [QLabel(), "UAV 2 Location: "],
+            [self.uav_2_value_label, self.mission.uav_2.uav_location.label],
+            [QLabel(), "Move UAV 2 To: "],
+            [self.move_uav_2_box],
+            [QPushButton(), "Move", self.move_uav, 2]
         ])
 
         #  UGV Location and Moving
@@ -146,7 +165,10 @@ class Renderer(QMainWindow):
                 pass
             elif type(new_widget) is QPushButton:
                 new_widget.setText(list[1])
-                new_widget.clicked.connect(list[2])
+                if len(list) == 4:
+                    new_widget.clicked.connect(lambda: list[2](list[3]))
+                else:
+                    new_widget.clicked.connect(list[2])
             else:
                 continue
             horizontal_layout.addWidget(new_widget)
@@ -168,10 +190,14 @@ class Renderer(QMainWindow):
         if len(hex_label) == 2 and hex_label.isalpha:
             chosen_hex = self.mission.get_chosen_hex(hex_label)
             if chosen_hex is not None:
-                if chosen_hex.ai_queried:
-                    self.ai_query_value_label.setText(str(chosen_hex.ai_confidence))
+                if chosen_hex.ai_1_queried:
+                    self.ai_1_query_value_label.setText(str(chosen_hex.ai_1_confidence))
                 else:
-                    self.ai_query_value_label.setText("Hex %s not yet estimated by AI" % (hex_label))
+                    self.ai_1_query_value_label.setText("Hex %s not yet estimated by AI 1" % (hex_label))
+                if chosen_hex.ai_2_queried:
+                    self.ai_2_query_value_label.setText(str(chosen_hex.ai_2_confidence))
+                else:
+                    self.ai_2_query_value_label.setText("Hex %s not yet estimated by AI 2" % (hex_label))
                 if chosen_hex.human_queried:
                     self.human_query_value_label.setText(str(chosen_hex.human_confidence))
                 else:
@@ -179,14 +205,20 @@ class Renderer(QMainWindow):
                 self.terrain_value_label.setText(chosen_hex.terrain)
         self.mission_report.setText(self.mission.current_log)
 
-    def query_ai(self):
+    def query_ai(self, num_uav: int):
         """
         Provide the AI cost and increase the total
+
+        Parameters:
+            num_uav (int): The number of the uav to move
         """
 
         self.mission_report.setText("")
-        if self.mission.query_ai():
-            self.ai_query_value_label.setText(str(self.mission.selected_hexagon.ai_confidence))
+        if self.mission.query_ai(num_uav):
+            if num_uav == 1:
+                self.ai_1_query_value_label.setText(str(self.mission.selected_hexagon.ai_1_confidence))
+            elif num_uav == 2:
+                self.ai_2_query_value_label.setText(str(self.mission.selected_hexagon.ai_2_confidence))
             self.total_value_label.setText(str(self.mission.total))
         self.mission_report.setText(self.mission.current_log)
 
@@ -201,16 +233,29 @@ class Renderer(QMainWindow):
             self.total_value_label.setText(str(self.mission.total))
         self.mission_report.setText(self.mission.current_log)
 
-    def move_uav(self):
+    def move_uav(self, num_uav: int):
         """
         Move the UAV to a valid adjacent location and increase the cost
+
+        Parameters:
+            num_uav (int): The number of the uav to move
         """
 
+        uav_box_text = ""
+        label = None
+        uav = None
+        if num_uav == 1:
+            uav_box_text = self.move_uav_1_box.text().upper()
+            label = self.uav_1_value_label
+            uav = self.mission.uav_1
+        elif num_uav == 2:
+            uav_box_text = self.move_uav_2_box.text().upper()
+            label = self.uav_2_value_label
+            uav = self.mission.uav_2
         self.mission_report.setText("")
-        uav_box_text = self.move_uav_box.text().upper()
-        hex = self.mission.move_uav(uav_box_text)
+        hex = self.mission.move_uav(uav, uav_box_text)
         if hex is not None:
-            self.uav_value_label.setText(uav_box_text)
+            label.setText(uav_box_text)
             self.total_value_label.setText(str(self.mission.total))
         self.mission_report.setText(self.mission.current_log)
 

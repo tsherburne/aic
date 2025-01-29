@@ -3,6 +3,7 @@ import logging
 import datetime
 import os
 from hexagon import Hexagon
+from uav import UAV
 
 
 class Mission():
@@ -30,7 +31,7 @@ class Mission():
             for label in data.keys():
                 if label != "mission":
                     content = data[label]
-                    self.__hexagons.append(Hexagon(label, content['Terrain'], content['AI Confidence'], content['Human Confidence'], content['Mine']))
+                    self.__hexagons.append(Hexagon(label, content['Terrain'], content['AI Confidence'], content['AI Second Scan Confidence'], content['Human Confidence'], content['Mine']))
             data = data['mission']
             self.__start_node = data['start']
             self.__end_node = data['end']
@@ -38,11 +39,12 @@ class Mission():
             self.__ai_estimate_time = data["AI estimate time"]
             self.__ugv_traversal_time = data["UGV traversal time"]
             self.__ugv_clear_time = data["UGV clear time"]
-            self.__uav_traversal_time = data["UAV traversal time"]
+            self.__uav_1 = UAV(1, self.__hexagons[0], data["UAV traversal time"])
+            self.__uav_2 = UAV(2, self.__hexagons[0], data["UAV traversal time"])
             self.__ugv_location = self.__hexagons[0]
-            self.__uav_location = self.__hexagons[0]
             self.__hexagons[0].landmine_present = False
-            self.__hexagons[0].uav_scanned = True
+            self.__hexagons[0].uav_1_scanned = True
+            self.__hexagons[0].uav_2_scanned = True
         self.__total = 0
 
     @property
@@ -136,14 +138,24 @@ class Mission():
         return self.__ugv_clear_time
 
     @property
-    def uav_traversal_time(self) -> int:
+    def uav_1(self) -> int:
         """
-        Gets the ugv_traversal_time field
+        Gets the ugv_1 field
 
         Returns:
-            int - The uav traversal time
+            int - The first uav
         """
-        return self.__uav_traversal_time
+        return self.__uav_1
+
+    @property
+    def uav_2(self) -> int:
+        """
+        Gets the ugv_2 field
+
+        Returns:
+            int - The second uav
+        """
+        return self.__uav_2
 
     @property
     def ugv_location(self) -> Hexagon:
@@ -154,16 +166,6 @@ class Mission():
             str - The ugv location
         """
         return self.__ugv_location
-
-    @property
-    def uav_location(self) -> Hexagon:
-        """
-        Gets the uav_location field
-
-        Returns:
-            str - The uav location
-        """
-        return self.__uav_location
 
     @property
     def total(self) -> int:
@@ -190,26 +192,35 @@ class Mission():
         Increase total by value
 
         Params:
-            int - The value to increase total by
+            value (int): The value to increase total by
         """
         self.__total += value
 
-    def query_ai(self) -> bool:
+    def query_ai(self, num_uav: int) -> bool:
         """
         Check if there is a selected hex scanned by the UAV, and query the AI if so
 
+        Params:
+            num_uav (int): The number UAV to select
+        
         Returns:
             True if the AI was queried
         """
 
-        if self.selected_hexagon is not None and self.selected_hexagon.uav_scanned and not self.selected_hexagon.ai_queried:
-            self.selected_hexagon.ai_queried = True
-            self.__increment_total(self.ai_estimate_time)
-            self.__log_message("AI queried for hex %s. The estimate was %s." % (self.selected_hexagon.label, self.selected_hexagon.ai_confidence))
-            return True
-        else:
-            self.__log_message("AI could not be queried for hex %s. This occurs if a hex is not selected, the AI has already been queried, or the UAV has not scanned the current hex." % (self.selected_hexagon.label))
-            return False
+        if num_uav == 1:
+            if self.selected_hexagon is not None and self.selected_hexagon.uav_1_scanned and not self.selected_hexagon.ai_1_queried:
+                self.selected_hexagon.ai_1_queried = True
+                self.__increment_total(self.ai_estimate_time)
+                self.__log_message("AI %d queried for hex %s. The estimate was %s." % (num_uav, self.selected_hexagon.label, self.selected_hexagon.ai_1_confidence))
+                return True
+        elif num_uav == 2:
+            if self.selected_hexagon is not None and self.selected_hexagon.uav_2_scanned and not self.selected_hexagon.ai_2_queried:
+                self.selected_hexagon.ai_2_queried = True
+                self.__increment_total(self.ai_estimate_time)
+                self.__log_message("AI %d queried for hex %s. The estimate was %s." % (num_uav, self.selected_hexagon.label, self.selected_hexagon.ai_2_confidence))
+                return True
+        self.__log_message("AI %d could not be queried for hex %s. This occurs if a hex is not selected, the AI has already been queried, or the UAV has not scanned the current hex." % (num_uav, self.selected_hexagon.label))
+        return False
 
     def query_human(self) -> bool:
         """
@@ -219,7 +230,7 @@ class Mission():
             True if the AI was queried
         """
 
-        if self.selected_hexagon is not None and self.selected_hexagon.uav_scanned and not self.selected_hexagon.human_queried:
+        if self.selected_hexagon is not None and (self.selected_hexagon.uav_1_scanned or self.selected_hexagon.uav_2_scanned) and not self.selected_hexagon.human_queried:
             self.selected_hexagon.human_queried = True
             self.__increment_total(self.human_estimate_time)
             self.__log_message("Human queried for hex %s. The estimate was %s." % (self.selected_hexagon.label, self.selected_hexagon.human_confidence))
@@ -265,11 +276,12 @@ class Mission():
         self.__log_message("UGV could not be moved to passage %s. Please check the destination exists and is adjacent to the UGV's current location" % destination_node)
         return -1
 
-    def move_uav(self, destination_node: str) -> Hexagon:
+    def move_uav(self, uav: UAV, destination_node: str) -> Hexagon:
         """
         Move the UAV to a valid adjacent location and increase the cost
 
         Params:
+            uav (UAV): The UAV to be moved
             destination_node (str): The destination node for the UAV to move to
 
         Returns:
@@ -277,13 +289,16 @@ class Mission():
         """
 
         for hex in self.hexagons:
-            if hex.label == destination_node and self.__is_adjacent(self.uav_location, hex):
-                self.__increment_total(self.uav_traversal_time)
-                self.__uav_location = hex
-                hex.uav_scanned = True
-                self.__log_message("UAV moved to passage %s. Estimates can now be obtained for hex %s." % (destination_node, destination_node))
+            if hex.label == destination_node and self.__is_adjacent(uav.uav_location, hex):
+                self.__increment_total(uav.uav_traversal_time)
+                uav.uav_location = hex
+                if uav.uav_number == 1:
+                    hex.uav_1_scanned = True
+                elif uav.uav_number == 2:
+                    hex.uav_2_scanned = True
+                self.__log_message("UAV %d moved to passage %s. Estimates can now be obtained for hex %s." % (uav.uav_number, destination_node, destination_node))
                 return hex
-        self.__log_message("UAV could not be moved to passage %s. Please check the destination exists and is adjacent to the UAV's current location" % destination_node)
+        self.__log_message("UAV %d could not be moved to passage %s. Please check the destination exists and is adjacent to the UAV's current location" % (uav.uav_number, destination_node))
         return None
     
     def __is_adjacent(self, current_hex: Hexagon, destination_hex: Hexagon) -> bool:
