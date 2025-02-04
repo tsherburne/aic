@@ -6,8 +6,7 @@
         "AI estimate time": 5,
         "UGV traversal time": 20,
         "UGV clear time": 60,
-        "UAV 1 traversal time": 1,
-        "UAV 2 traversal time": 2
+        "UAV traversal time": 1
     },
     "AA": {
         "Terrain": "Swampy",
