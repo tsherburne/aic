@@ -219,7 +219,10 @@ class Mission():
                 self.__increment_total(self.ai_estimate_time)
                 self.__log_message("AI %d queried for hex %s. The estimate was %s." % (num_uav, self.selected_hexagon.label, self.selected_hexagon.ai_2_confidence))
                 return True
-        self.__log_message("AI %d could not be queried for hex %s. This occurs if a hex is not selected, the AI has already been queried, or the UAV has not scanned the current hex." % (num_uav, self.selected_hexagon.label))
+        if self.selected_hexagon:
+            self.__log_message("AI %d could not be queried for hex %s. This occurs if a the AI has already been queried, or the UAV has not scanned the current hex." % (num_uav, self.selected_hexagon.label))
+        else:
+            self.__log_message("AI could not be queried as no hex is selected.")
         return False
 
     def query_human(self) -> bool:
