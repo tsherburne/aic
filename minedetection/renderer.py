@@ -16,24 +16,23 @@ class Renderer(QMainWindow):
         self.mission = Mission("example_scenario_two_scans.json")
 
         self.show_flag = 0
-        self.win_width = 1400
-        self.win_height = 1200
+        win_width = 1400
+        win_height = 1200
+        self.resize(win_width, win_height)
+        self.showMaximized()
 
         hexagon_labels = []
         for hex in self.mission.hexagons:
             hexagon_labels.append(hex.label)
-        hex_map = Renderer.HexagonMap(self, hexagon_labels)
+        self.hex_map = Renderer.HexagonMap(self, hexagon_labels)
 
         self.setWindowTitle('Scenario')
-        self.setFixedWidth(self.win_width)
-        self.setFixedHeight(self.win_height)
-
         pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'w')
         self.background = "background-color: white; color: white;"
         self.setStyleSheet("QMainWindow {background: 'white';}")
         self.main_panel = QGridLayout()
-        self.main_panel.addWidget(hex_map)
+        self.main_panel.addWidget(self.hex_map)
         self.initialize_ui_view()
 
         self.widget = QWidget()
@@ -253,8 +252,10 @@ class Renderer(QMainWindow):
             label = self.uav_2_value_label
             uav = self.mission.uav_2
         self.mission_report.setText("")
+        old_uav_location = uav.uav_location.label
         hex = self.mission.move_uav(uav, uav_box_text)
         if hex is not None:
+            self.set_hex_color(old_uav_location, uav_box_text, f'uav{uav.uav_number}')
             label.setText(uav_box_text)
             self.total_value_label.setText(str(self.mission.total))
         self.mission_report.setText(self.mission.current_log)
@@ -266,11 +267,47 @@ class Renderer(QMainWindow):
 
         self.mission_report.setText("")
         ugv_box_text = self.move_ugv_box.text().upper()
+        old_ugv_location = self.mission.ugv_location.label
         status = self.mission.move_ugv(ugv_box_text)
+        if status != -1 and status != 0:
+            self.set_hex_color(old_ugv_location, ugv_box_text, "ugv")
         if status == 2:
             self.ugv_value_label.setText(ugv_box_text)
         self.total_value_label.setText(str(self.mission.total))
         self.mission_report.setText(self.mission.current_log)
+
+    def set_hex_color(self,  from_hex: str, to_hex: str, moving_vehicle: str):
+        hexes = self.hex_map.scene.items()
+        for hex in hexes:
+            if type(hex).__name__ == "HexagonItem":
+                if hex.label == to_hex:
+                    if moving_vehicle == "ugv":
+                        hex.ugv_present = True
+                        hex.setBrush(QColor("red"))
+                    else:
+                        if moving_vehicle == "uav1":
+                            hex.uav_1_present = True
+                        else:
+                            hex.uav_2_present = True
+                        hex.setBrush(QColor("green"))
+                elif hex.label == from_hex:
+                    if moving_vehicle == "ugv":
+                        hex.ugv_present = False
+                        if hex.uav_1_present or hex.uav_2_present:
+                            hex.setBrush(QColor("green"))
+                        else:
+                            hex.setBrush(QColor(0, 0, 0, 127))
+                    else:
+                        if moving_vehicle == "uav1":
+                            hex.uav_1_present = False
+                        else:
+                            hex.uav_2_present = False
+                        if hex.ugv_present:
+                            hex.setBrush(QColor("red"))
+                        elif hex.uav_1_present or hex.uav_2_present:
+                            hex.setBrush(QColor("green"))
+                        else:
+                            hex.setBrush(QColor(0, 0, 0, 127))
 
 
     class HexagonItem(QGraphicsPolygonItem):
@@ -287,6 +324,9 @@ class Renderer(QMainWindow):
             super().__init__(parent)
             self.label = label
             self.renderer = renderer
+            self.uav_1_present = False
+            self.uav_2_present = False
+            self.ugv_present = False
 
             points = []
             for i in range(6):
@@ -306,6 +346,12 @@ class Renderer(QMainWindow):
 
             self.setBrush(QColor(0, 0, 0, 127))
             self.setPen(QColor(255, 255, 255, 127))
+
+            if label == renderer.mission.uav_1.uav_location.label:
+                self.uav_1_present = True
+                self.uav_2_present = True
+                self.ugv_present = True
+                self.setBrush(QColor("red"))
 
         def mousePressEvent(self, event):
             """
